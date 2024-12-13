@@ -30,4 +30,12 @@ public abstract class Handler extends Declaration{
     public void setAuthorizationExpressions(List<Expression> _authorizationExpressions) {
         authorizationExpressions.addAll(_authorizationExpressions);
     }
+
+    public Identifier getName() {
+        return name;
+    }
+
+    public List<Statement> getBody() {
+        return body;
+    }
 }

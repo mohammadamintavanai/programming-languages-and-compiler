@@ -50,4 +50,16 @@ public class ActorDec extends Declaration {
     public void setAccessExpressions(List<List<Expression>> accessExpressions) {
         this.accessExpressions.addAll(accessExpressions);
     }
+
+    public Identifier getName() {
+        return name;
+    }
+
+    public List<VarDeclaration> getActorVars() {
+        return actorVars;
+    }
+
+    public List<Handler> getMsgHandlers() {
+        return msgHandlers;
+    }
 }

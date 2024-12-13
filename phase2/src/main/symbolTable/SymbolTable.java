@@ -1,5 +1,6 @@
 package main.symbolTable;
 
+import main.symbolTable.exceptions.ActorAlreadyExist;
 import main.symbolTable.exceptions.ItemAlreadyExists;
 import main.symbolTable.exceptions.ItemNotFound;
 import main.symbolTable.items.SymbolTableItem;
@@ -10,7 +11,6 @@ import java.util.Map;
 
 public class SymbolTable {
     public static SymbolTable top;
-    public static SymbolTable root;
     private static Stack<SymbolTable> stack = new Stack<>();
     private Map<String, SymbolTableItem> items;
     public static void push(SymbolTable symbolTable) {
@@ -28,6 +28,12 @@ public class SymbolTable {
         if (items.containsKey(item.getKey()))
             throw new ItemAlreadyExists();
         items.put(item.getKey(), item);
+    }
+    public void handleActorHandlerConflictName(String key) throws ActorAlreadyExist {
+        SymbolTableItem symbolTableItem = this.items.get(key);
+        if ( symbolTableItem == null )
+            throw new ActorAlreadyExist();
+
     }
     public SymbolTableItem getItem(String key) throws ItemNotFound {
         SymbolTableItem symbolTableItem = this.items.get(key);

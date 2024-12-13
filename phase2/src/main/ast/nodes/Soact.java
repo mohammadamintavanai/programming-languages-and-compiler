@@ -37,6 +37,10 @@ public class Soact extends Node{
 
     }
 
+    public SymbolTable getSymbolTable() {
+        return symbolTable;
+    }
+
     public List<RecordNode> getRecords() {
         return records;
     }
