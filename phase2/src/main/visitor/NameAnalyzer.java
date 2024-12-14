@@ -163,9 +163,27 @@ public class NameAnalyzer extends Visitor<Void> {
         SymbolTable ifSymbolTable = new SymbolTable();
         for(Expression expression: ifStatement.getIfConds())
             expression.accept(this);
+        SymbolTable.push(ifSymbolTable);
         for(Statement statement: ifStatement.getIfBody())
             statement.accept(this);
-        for(Expression expression)
-        return null;
+        for(int i=0;i<ifStatement.getElseIfBlocksBody().size();i++)
+        {
+            SymbolTable elseIfSymbolTable = new SymbolTable();
+            for(int j=0;j<ifStatement.getElseIfBlocksConds().get(i).size();j++){
+                ifStatement.getElseIfBlocksConds().get(i).get(j).accept(this);
+
+            }
+            SymbolTable.push(elseIfSymbolTable);
+            for(int j=0;j < ifStatement.getElseIfBlocksBody().get(i).size();j++){
+                ifStatement.getElseIfBlocksBody().get(i).get(j).accept(this);
+            }
+
+        }
+        for(int i =0;i<ifStatement.getElseIfBlocksBody().size();i++)
+        {
+            SymbolTable.pop();
+
+        }
+    return null;
     }
 }
