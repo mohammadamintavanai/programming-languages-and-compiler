@@ -16,6 +16,14 @@ public class WhileStatement extends Statement{
         line = _line;
     }
 
+    public List<Statement> getBody() {
+        return body;
+    }
+
+    public List<Expression> getConditions() {
+        return conditions;
+    }
+
     @Override
     public <T> T accept(IVisitor<T> visitor) {
         return visitor.visit(this);

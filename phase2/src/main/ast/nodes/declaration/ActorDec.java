@@ -62,4 +62,8 @@ public class ActorDec extends Declaration {
     public List<Handler> getMsgHandlers() {
         return msgHandlers;
     }
+
+    public List<CustomPrimitiveDeclaration> getCustomPrimitiveDeclarations() {
+        return customPrimitiveDeclarations;
+    }
 }

@@ -22,6 +22,15 @@ public class ForStatement extends Statement{
             conditions.add(loopConditions.get(i));
     }
 
+    public List<Expression> getConditions() {
+        return conditions;
+    }
+
+    public List<Statement> getBody() {
+        return body;
+    }
+
+
     @Override
     public <T> T accept(IVisitor<T> visitor) {return visitor.visit(this);}
 }

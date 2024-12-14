@@ -2,7 +2,11 @@ package main.visitor;
 
 import main.ast.nodes.Soact;
 import main.ast.nodes.declaration.*;
+import main.ast.nodes.expression.Expression;
+import main.ast.nodes.statements.ForStatement;
+import main.ast.nodes.statements.IfStatement;
 import main.ast.nodes.statements.Statement;
+import main.ast.nodes.statements.WhileStatement;
 import main.symbolTable.SymbolTable;
 import main.symbolTable.exceptions.ActorAlreadyExist;
 import main.symbolTable.exceptions.ItemAlreadyExists;
@@ -30,24 +34,25 @@ public class NameAnalyzer extends Visitor<Void> {
 
     @Override
     public Void visit(RecordNode recordNode) {
-            RecordSymbolTableItem recordSymbolTableItem = new RecordSymbolTableItem(recordNode.getId().getName());
-            //TODO
-            //recordNode.getId().accept(this);
-            try{
-                SymbolTable.top.put(recordSymbolTableItem);
-            }
-            catch (ItemAlreadyExists i){
-                //TODO shadowing
-            }
-            SymbolTable recordSymbolTable = new SymbolTable();
-            SymbolTable.push(recordSymbolTable);
-            recordSymbolTableItem.setRecordSymbolTable(recordSymbolTable);
-            for(VarDeclaration var: recordNode.getVars())
-                var.accept(this);
-            SymbolTable.pop();
-
-
-        return null;
+        //TODO
+//            RecordSymbolTableItem recordSymbolTableItem = new RecordSymbolTableItem(recordNode.getId().getName());
+//            //TODO
+//            //recordNode.getId().accept(this);
+//            try{
+//                SymbolTable.top.put(recordSymbolTableItem);
+//            }
+//            catch (ItemAlreadyExists i){
+//                //TODO shadowing
+//            }
+//            SymbolTable recordSymbolTable = new SymbolTable();
+//            SymbolTable.push(recordSymbolTable);
+//            recordSymbolTableItem.setRecordSymbolTable(recordSymbolTable);
+//            for(VarDeclaration var: recordNode.getVars())
+//                var.accept(this);
+//            SymbolTable.pop();
+//
+//
+       return null;
     }
 
     @Override
@@ -62,12 +67,20 @@ public class NameAnalyzer extends Visitor<Void> {
         SymbolTable actorSymbolTable = new SymbolTable();
         actorSymbolTableItem.setSymbolTable(actorSymbolTable);
         SymbolTable.push(actorSymbolTable);
+        for(CustomPrimitiveDeclaration customPrimitiveDeclaration:actorDec.getCustomPrimitiveDeclarations())
+            customPrimitiveDeclaration.accept(this);
         //TODO VARIABLE
         //TODO CONSTRUCTOR
         for(Handler handler:actorDec.getMsgHandlers()) {
             handler.accept(this);
         }
         SymbolTable.pop();
+        return null;
+    }
+
+    @Override
+    public Void visit(CustomPrimitiveDeclaration customPrimitiveDeclaration) {
+        //TODO
         return null;
     }
 
@@ -95,4 +108,64 @@ public class NameAnalyzer extends Visitor<Void> {
         return null;
     }
 
+    @Override
+    public Void visit(ServiceHandler serviceHandler) {
+
+
+        try {
+            SymbolTable.top.handleActorHandlerConflictName(ActorSymbolTableItem.START_KEY + serviceHandler.getName());
+        } catch (ActorAlreadyExist a) {
+            //TODO
+        }
+        HandlerSymbolTableItem handlerSymbolTableItem = new HandlerSymbolTableItem(serviceHandler.getName().getName());
+        try {
+            SymbolTable.top.put(handlerSymbolTableItem);
+        } catch (ItemAlreadyExists i) {
+            //TODO
+        }
+        //TODO PARAMETER
+        SymbolTable handlerSymbolTable = new SymbolTable();
+        SymbolTable.push(handlerSymbolTable);
+        for(Statement statement:serviceHandler.getBody()){
+            statement.accept(this);
+        }
+        SymbolTable.pop();
+        return null;
+    }
+
+    @Override
+    public Void visit(ForStatement forStatement) {
+        for(Expression expression:forStatement.getConditions())
+            expression.accept(this);
+        SymbolTable forStatementSymbolTable = new SymbolTable();
+        SymbolTable.push(forStatementSymbolTable);
+        for(Statement statement:forStatement.getBody())
+            statement.accept(this);
+        SymbolTable.pop();
+
+        return null;
+    }
+
+    @Override
+    public Void visit(WhileStatement whileStatement) {
+        for(Expression expression:whileStatement.getConditions())
+            expression.accept(this);
+        SymbolTable whileSymbolTable = new SymbolTable();
+        SymbolTable.push(whileSymbolTable);
+        for(Statement statement: whileStatement.getBody())
+            statement.accept(this);
+        SymbolTable.pop();
+        return null;
+    }
+
+    @Override
+    public Void visit(IfStatement ifStatement) {
+        SymbolTable ifSymbolTable = new SymbolTable();
+        for(Expression expression: ifStatement.getIfConds())
+            expression.accept(this);
+        for(Statement statement: ifStatement.getIfBody())
+            statement.accept(this);
+        for(Expression expression)
+        return null;
+    }
 }

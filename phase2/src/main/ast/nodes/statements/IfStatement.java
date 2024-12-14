@@ -13,6 +13,27 @@ public class IfStatement extends Statement{
     private List<List<Statement>> elseIfBlocksBody = new ArrayList<>();
     private List<Statement> elseBody = new ArrayList<>();
 
+    public List<Expression> getIfConds() {
+        return ifConds;
+    }
+
+    public List<Statement> getElseBody() {
+        return elseBody;
+    }
+
+    public List<Statement> getIfBody() {
+        return ifBody;
+    }
+
+    public List<List<Statement>> getElseIfBlocksBody() {
+        return elseIfBlocksBody;
+    }
+
+    public List<List<Expression>> getElseIfBlocksConds() {
+        return elseIfBlocksConds;
+    }
+
+
     public IfStatement(int _line) {
         line = _line;
     }
