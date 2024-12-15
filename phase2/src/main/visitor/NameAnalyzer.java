@@ -34,24 +34,24 @@ public class NameAnalyzer extends Visitor<Void> {
 
     @Override
     public Void visit(RecordNode recordNode) {
-        //TODO
-//            RecordSymbolTableItem recordSymbolTableItem = new RecordSymbolTableItem(recordNode.getId().getName());
-//            //TODO
-//            //recordNode.getId().accept(this);
-//            try{
-//                SymbolTable.top.put(recordSymbolTableItem);
-//            }
-//            catch (ItemAlreadyExists i){
-//                //TODO shadowing
-//            }
-//            SymbolTable recordSymbolTable = new SymbolTable();
-//            SymbolTable.push(recordSymbolTable);
-//            recordSymbolTableItem.setRecordSymbolTable(recordSymbolTable);
-//            for(VarDeclaration var: recordNode.getVars())
-//                var.accept(this);
-//            SymbolTable.pop();
-//
-//
+
+            RecordSymbolTableItem recordSymbolTableItem = new RecordSymbolTableItem(recordNode.getId().getName());
+            //TODO
+            //recordNode.getId().accept(this);
+            try{
+                SymbolTable.top.put(recordSymbolTableItem);
+            }
+            catch (ItemAlreadyExists i){
+                //TODO shadowing
+            }
+            SymbolTable recordSymbolTable = new SymbolTable();
+            SymbolTable.push(recordSymbolTable);
+            recordSymbolTableItem.setRecordSymbolTable(recordSymbolTable);
+            for(VarDeclaration var: recordNode.getVars())
+                var.accept(this);
+            SymbolTable.pop();
+
+
        return null;
     }
 
@@ -179,11 +179,17 @@ public class NameAnalyzer extends Visitor<Void> {
             }
 
         }
-        for(int i =0;i<ifStatement.getElseIfBlocksBody().size();i++)
+        for(int i =0;i<ifStatement.getElseIfBlocksBody().size()+1;i++)
         {
             SymbolTable.pop();
 
         }
+        SymbolTable elseSymbolTable = new SymbolTable();
+        SymbolTable.push(elseSymbolTable);
+        for(Statement statement:ifStatement.getElseBody())
+            statement.accept(this);
+        SymbolTable.pop();
     return null;
     }
+
 }
