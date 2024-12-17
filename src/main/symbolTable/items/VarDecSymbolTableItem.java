@@ -3,7 +3,7 @@ package main.symbolTable.items;
 import main.symbolTable.SymbolTable;
 
 public class VarDecSymbolTableItem extends SymbolTableItem{
-    public static final String START_KEY = "VarDec";
+    public static final String START_KEY = "VarDec_";
 
     private String varName;
     private SymbolTable symbolTable;
