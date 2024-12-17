@@ -4,6 +4,7 @@ import main.ast.nodes.Soact;
 import main.ast.nodes.declaration.*;
 import main.ast.nodes.expression.Expression;
 import main.ast.nodes.expression.Identifier;
+import main.ast.nodes.expression.value.IntValue;
 import main.ast.nodes.statements.*;
 import main.symbolTable.SymbolTable;
 import main.symbolTable.exceptions.ActorAlreadyExist;
@@ -232,11 +233,10 @@ public Void visit(InitStatement assignmentStatement) {
     return null;
 }
 
-
-
-
-
-
+@Override
+public Void visit(IntValue intValue) {
+    return null;
+}
 
 
 
