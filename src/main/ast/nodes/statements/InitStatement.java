@@ -17,7 +17,9 @@ public class InitStatement extends Statement{
         line = _line;
     }
 
-
+    public VarDeclaration getAssignee() {
+        return this.assignee;
+    }
     @Override
     public <T> T accept(IVisitor<T> visitor) {
         return visitor.visit(this);

@@ -18,6 +18,7 @@ public class AssignmentStatement extends Statement{
         ids.add(id);
     }
 
+
     public void setAssigned(List<Expression> _assigned){
         assigned.addAll(_assigned);
     }

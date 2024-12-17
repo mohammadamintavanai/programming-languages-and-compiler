@@ -3,17 +3,13 @@ package main.visitor;
 import main.ast.nodes.Soact;
 import main.ast.nodes.declaration.*;
 import main.ast.nodes.expression.Expression;
-import main.ast.nodes.statements.ForStatement;
-import main.ast.nodes.statements.IfStatement;
-import main.ast.nodes.statements.Statement;
-import main.ast.nodes.statements.WhileStatement;
+import main.ast.nodes.expression.Identifier;
+import main.ast.nodes.statements.*;
 import main.symbolTable.SymbolTable;
 import main.symbolTable.exceptions.ActorAlreadyExist;
 import main.symbolTable.exceptions.ItemAlreadyExists;
-import main.symbolTable.items.ActorSymbolTableItem;
-import main.symbolTable.items.HandlerSymbolTableItem;
-import main.symbolTable.items.RecordSymbolTableItem;
-import main.symbolTable.items.SymbolTableItem;
+import main.symbolTable.exceptions.ItemNotFound;
+import main.symbolTable.items.*;
 import main.visitor.Visitor;
 
 public class NameAnalyzer extends Visitor<Void> {
@@ -193,3 +189,54 @@ public class NameAnalyzer extends Visitor<Void> {
     }
 
 }
+
+@Override
+public Void visit(VarDeclaration varDeclaration) {
+    varDeclaration.getName().accept(this);
+    VarDecSymbolTableItem varDecSymbolTableItem = new VarDecSymbolTableItem(varDeclaration.getName().getName());
+    try {
+        SymbolTable.top.put(varDecSymbolTableItem);
+    }
+    catch (ItemAlreadyExists e) {
+    }
+    return null;
+}
+
+@Override
+public Void visit(Identifier identifier) {
+
+    try {
+        SymbolTable.top.getItem(Identifier.getName())
+    }
+    catch (ItemNotFound e) {
+
+    }
+    return null;
+}
+
+
+@Override
+public Void visit(InitStatement assignmentStatement) {
+
+    VarDeclaration assignee = assignmentStatement.getAssignee();
+
+    try {
+        VarDecSymbolTableItem varDecItem = new VarDecSymbolTableItem(assignee.getName().getName());
+        SymbolTable.top.put(varDecItem);
+
+    } catch (ItemAlreadyExists e) {
+        // Handle the case where the variable already exists in the current scope
+//        System.err.println("Error: Variable '" + varName + "' already exists in the current scope.");
+    }
+
+    return null;
+}
+
+
+
+
+
+
+
+
+

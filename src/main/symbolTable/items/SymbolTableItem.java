@@ -1,6 +1,7 @@
 package main.symbolTable.items;
 
 public abstract class SymbolTableItem {
+
     protected String name;
     public abstract String getKey();
 
