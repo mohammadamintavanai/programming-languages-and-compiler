@@ -10,7 +10,9 @@ public class VarDeclaration extends Declaration{
         this.name = _name;
         line = _line;
     }
-
+    public String getType(){
+        return "";
+    }
     public Identifier getName(){return this.name;}
 
     public void setName(Identifier name){this.name = name;}

@@ -20,6 +20,10 @@ public class CustomPrimitiveDeclaration extends Declaration{
         states.add(state);
     }
 
+    public List<Identifier> getStates() {
+        return states;
+    }
+
     @Override
     public <T> T accept(IVisitor<T> visitor) {
         return visitor.visit(this);

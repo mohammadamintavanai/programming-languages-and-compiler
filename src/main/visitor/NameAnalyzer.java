@@ -7,11 +7,11 @@ import main.ast.nodes.expression.Identifier;
 import main.ast.nodes.expression.value.IntValue;
 import main.ast.nodes.statements.*;
 import main.symbolTable.SymbolTable;
-import main.symbolTable.exceptions.ActorAlreadyExist;
 import main.symbolTable.exceptions.ItemAlreadyExists;
 import main.symbolTable.exceptions.ItemNotFound;
 import main.symbolTable.items.*;
-import main.visitor.Visitor;
+
+import java.util.List;
 
 public class NameAnalyzer extends Visitor<Void> {
     @Override
@@ -31,19 +31,9 @@ public class NameAnalyzer extends Visitor<Void> {
 
     @Override
     public Void visit(RecordNode recordNode) {
-
-        RecordSymbolTableItem recordSymbolTableItem = new RecordSymbolTableItem(recordNode.getId().getName());
-        //TODO
-        //recordNode.getId().accept(this);
-        try{
-            SymbolTable.top.put(recordSymbolTableItem);
-        }
-        catch (ItemAlreadyExists i){
-            //TODO shadowing
-        }
         SymbolTable recordSymbolTable = new SymbolTable();
         SymbolTable.push(recordSymbolTable);
-        recordSymbolTableItem.setRecordSymbolTable(recordSymbolTable);
+        //recordSymbolTableItem.setRecordSymbolTable(recordSymbolTable);
         for(VarDeclaration var: recordNode.getVars())
             var.accept(this);
         SymbolTable.pop();
@@ -66,8 +56,11 @@ public class NameAnalyzer extends Visitor<Void> {
         SymbolTable.push(actorSymbolTable);
         for(CustomPrimitiveDeclaration customPrimitiveDeclaration:actorDec.getCustomPrimitiveDeclarations())
             customPrimitiveDeclaration.accept(this);
-        //TODO VARIABLE
-        //TODO CONSTRUCTOR
+        for(VarDeclaration varDeclaration:actorDec.getActorVars())
+            varDeclaration.accept(this);
+
+
+
         for(Handler handler:actorDec.getMsgHandlers()) {
             handler.accept(this);
         }
@@ -77,7 +70,18 @@ public class NameAnalyzer extends Visitor<Void> {
 
     @Override
     public Void visit(CustomPrimitiveDeclaration customPrimitiveDeclaration) {
-        //TODO
+        SymbolTable customPrimitive = new SymbolTable();
+        SymbolTable.push(customPrimitive);
+        for(Identifier id:customPrimitiveDeclaration.getStates()){
+
+            CustomPrimitiveSymbolTableItem customPrimitiveSymbolTableItem = new CustomPrimitiveSymbolTableItem(id.getName());
+            try{
+                SymbolTable.top.put(customPrimitiveSymbolTableItem);
+            }catch(ItemAlreadyExists i){
+                //TODO
+            }
+        }
+        SymbolTable.pop();
         return null;
     }
 
@@ -85,23 +89,41 @@ public class NameAnalyzer extends Visitor<Void> {
     public Void visit(ObserveHandler observeHandler) {
 
         try {
-            SymbolTable.top.handleActorHandlerConflictName(ActorSymbolTableItem.START_KEY + observeHandler.getName());
-        } catch (ActorAlreadyExist a) {
-            //TODO
-        }
-        HandlerSymbolTableItem handlerSymbolTableItem = new HandlerSymbolTableItem(observeHandler.getName().getName());
-        try {
-            SymbolTable.top.put(handlerSymbolTableItem);
+            SymbolTable.top.findKey(ActorSymbolTableItem.START_KEY+observeHandler.getName().getName());//todo
         } catch (ItemAlreadyExists i) {
             //TODO
         }
-        //TODO PARAMETER
+//todo check with another handler
         SymbolTable handlerSymbolTable = new SymbolTable();
         SymbolTable.push(handlerSymbolTable);
+        for(VarDeclaration varDeclaration:observeHandler.getArgs()) {
+            varDeclaration.accept(this);
+
+        }
         for(Statement statement:observeHandler.getBody()){
             statement.accept(this);
         }
+        HandlerSymbolTableItem handlerSymbolTableItem = new HandlerSymbolTableItem(observeHandler.getName().getName());
         SymbolTable.pop();
+
+
+        try{
+            SymbolTable.top.put(handlerSymbolTableItem);
+
+
+
+
+
+        }catch (ItemAlreadyExists i){
+            //TODO
+        }
+
+
+
+
+
+
+
         return null;
     }
 
@@ -110,23 +132,41 @@ public class NameAnalyzer extends Visitor<Void> {
 
 
         try {
-            SymbolTable.top.handleActorHandlerConflictName(ActorSymbolTableItem.START_KEY + serviceHandler.getName());
-        } catch (ActorAlreadyExist a) {
-            //TODO
-        }
-        HandlerSymbolTableItem handlerSymbolTableItem = new HandlerSymbolTableItem(serviceHandler.getName().getName());
-        try {
-            SymbolTable.top.put(handlerSymbolTableItem);
+            SymbolTable.top.findKey(ActorSymbolTableItem.START_KEY+serviceHandler.getName().getName());//todo
         } catch (ItemAlreadyExists i) {
             //TODO
         }
-        //TODO PARAMETER
+//todo check with another handler
         SymbolTable handlerSymbolTable = new SymbolTable();
         SymbolTable.push(handlerSymbolTable);
+        for(VarDeclaration varDeclaration:serviceHandler.getArgs()) {
+            varDeclaration.accept(this);
+
+        }
         for(Statement statement:serviceHandler.getBody()){
             statement.accept(this);
         }
+        HandlerSymbolTableItem handlerSymbolTableItem = new HandlerSymbolTableItem(serviceHandler.getName().getName());
         SymbolTable.pop();
+
+
+        try{
+            SymbolTable.top.put(handlerSymbolTableItem);
+
+
+
+
+
+        }catch (ItemAlreadyExists i){
+            //TODO
+        }
+
+
+
+
+
+
+
         return null;
     }
 
@@ -189,9 +229,23 @@ public class NameAnalyzer extends Visitor<Void> {
         return null;
     }
 
+    @Override
+    public Void visit(JoinStatement joinStatement) {
+        SymbolTable joinSymbolTable = new SymbolTable();
+        SymbolTable.push(joinSymbolTable);
+        for(Statement statement: joinStatement.getBody())
+            statement.accept(this);
+        SymbolTable.pop();
+        return null;
 
+    }
 
-@Override
+    @Override
+    public Void visit(PipeStatement pipeStatement) {
+        return super.visit(pipeStatement);
+    }
+
+    @Override
 public Void visit(VarDeclaration varDeclaration) {
     varDeclaration.getName().accept(this);
     VarDecSymbolTableItem varDecSymbolTableItem = new VarDecSymbolTableItem(varDeclaration.getName().getName());
@@ -210,7 +264,7 @@ public Void visit(Identifier identifier) {
         SymbolTable.top.getItem(Identifier.getName());
     }
     catch (ItemNotFound e) {
-
+//TODO
     }
     return null;
 }

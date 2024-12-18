@@ -2,7 +2,7 @@ package main.symbolTable.items;
 
 public class HandlerSymbolTableItem extends SymbolTableItem {
 
-    public static final String START_KEY = "HandlerDec_";
+    private String key;
 
     private String handlerName;
 
@@ -10,11 +10,12 @@ public class HandlerSymbolTableItem extends SymbolTableItem {
         this.handlerName = handlerName;
     }
 
-    @Override
-    public String getKey() {
-        return START_KEY + this.handlerName;
+    public void setKey(String key) {
+        this.key = key;
     }
-
+    public String getKey(){
+        return this.key;
+    }
     public String getFunctionName() {
         return handlerName;
     }

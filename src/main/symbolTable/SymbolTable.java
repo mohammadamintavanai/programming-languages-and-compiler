@@ -1,11 +1,12 @@
 package main.symbolTable;
 
-import main.symbolTable.exceptions.ActorAlreadyExist;
 import main.symbolTable.exceptions.ItemAlreadyExists;
 import main.symbolTable.exceptions.ItemNotFound;
 import main.symbolTable.items.SymbolTableItem;
 import main.utils.Stack;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -29,10 +30,13 @@ public class SymbolTable {
             throw new ItemAlreadyExists();
         items.put(item.getKey(), item);
     }
-    public void handleActorHandlerConflictName(String key) throws ActorAlreadyExist {
+
+
+
+    public void findKey(String key) throws ItemAlreadyExists {
         SymbolTableItem symbolTableItem = this.items.get(key);
         if ( symbolTableItem == null )
-            throw new ActorAlreadyExist();
+            throw new ItemAlreadyExists();
 
     }
     public SymbolTableItem getItem(String key) throws ItemNotFound {

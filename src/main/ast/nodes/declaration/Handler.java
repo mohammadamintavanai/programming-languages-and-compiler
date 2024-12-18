@@ -39,4 +39,7 @@ public abstract class Handler extends Declaration{
         return body;
     }
 
+    public List<VarDeclaration> getArgs() {
+        return args;
+    }
 }
