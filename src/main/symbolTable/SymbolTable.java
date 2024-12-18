@@ -27,7 +27,7 @@ public class SymbolTable {
     }
     public void put(SymbolTableItem item) throws ItemAlreadyExists {
         if (items.containsKey(item.getKey()))
-            throw new ItemAlreadyExists();
+            throw new ItemAlreadyExists(item.getName());
         items.put(item.getKey(), item);
     }
 
