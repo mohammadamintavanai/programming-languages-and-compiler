@@ -439,21 +439,21 @@ expEqualsPrim returns [ArrayList<Expression> expRet]:{$expRet = new ArrayList<>(
 
 expCompare returns [ArrayList<Expression> expRet]:{$expRet = new ArrayList<>();} ex1 = expPlusMinus{$expRet.addAll($ex1.expRet);} ex2 = expComparePrim{$expRet.addAll($ex2.expRet);};
 
-expComparePrim: (pm_name = (PLUS | MINUS) expPlusMinus {System.out.println("Line " + $pm_name.getLine() + " : " + "Operator:" + $pm_name.text);} expComparePrim)?;
+expComparePrim returns [ArrayList<Expression> expRet]:{$expRet = new ArrayList<>();} (pm_name = (PLUS | MINUS) ex1 = expPlusMinus{$expRet.addAll($ex1.expRet);} {System.out.println("Line " + $pm_name.getLine() + " : " + "Operator:" + $pm_name.text);} ex2 = expComparePrim{$expRet.addAll($ex2.expRet);})?;
 
-expPlusMinus: expDivideMultMod expPlusMinusPrim;
+expPlusMinus returns [ArrayList<Expression> expRet]:{$expRet = new ArrayList<>();} ex1 = expDivideMultMod{$expRet.addAll($ex1.expRet);} ex2 = expPlusMinusPrim{$expRet.addAll($ex2.expRet);};
 
-expPlusMinusPrim: (dmd_name = (DIVIDE | MULT | MOD) expDivideMultMod {System.out.println("Line " + $dmd_name.getLine() + " : " + "Operator:" + $dmd_name.text);} expPlusMinusPrim)?;
+expPlusMinusPrim returns [ArrayList<Expression> expRet]:{$expRet = new ArrayList<>();}(dmd_name = (DIVIDE | MULT | MOD) ex1 = expDivideMultMod{$expRet.addAll($ex1.expRet);} {System.out.println("Line " + $dmd_name.getLine() + " : " + "Operator:" + $dmd_name.text);} ex2 = expPlusMinusPrim{$expRet.addAll($ex2.expRet);})?;
 
-expDivideMultMod: expPreUnary | bmndi = (MINUS | NOT | DECREMENT | INCREMENT) expDivideMultMod {System.out.println("Line " + $bmndi.getLine() + " : " + "Operator:" + $bmndi.text);};
+expDivideMultMod  returns [ArrayList<Expression> expRet]:{$expRet = new ArrayList<>();} ex1 = expPreUnary{$expRet.addAll($ex1.expRet);} | bmndi = (MINUS | NOT | DECREMENT | INCREMENT) ex2 = expDivideMultMod{$expRet.addAll($ex2.expRet);} {System.out.println("Line " + $bmndi.getLine() + " : " + "Operator:" + $bmndi.text);};
 
-expPreUnary: expPostUnary expPreUnaryPrim;
+expPreUnary  returns [ArrayList<Expression> expRet]:{$expRet = new ArrayList<>();} ex1 = expPostUnary{$expRet.addAll($ex1.expRet);} ex2 = expPreUnaryPrim{$expRet.addAll($ex2.expRet);};
 
-expPreUnaryPrim: (id_name = (INCREMENT | DECREMENT) expPreUnaryPrim {System.out.println("Line " + $id_name.getLine() + " : " + "Operator:" + $id_name.text);})?;
+expPreUnaryPrim returns [ArrayList<Expression> expRet]:{$expRet = new ArrayList<>();} (id_name = (INCREMENT | DECREMENT) ex1 = expPreUnaryPrim{$expRet.addAll($ex1.expRet);} {System.out.println("Line " + $id_name.getLine() + " : " + "Operator:" + $id_name.text);})?;
 
-expPostUnary: expBracket | LBRACK expression RBRACK;
+expPostUnary returns [ArrayList<Expression> expRet]:{$expRet = new ArrayList<>();} ex1 = expBracket{$expRet.addAll($ex1.expRet);} | LBRACK ex2 = expression{$expRet.addAll($ex2.expRet);} RBRACK;
 
-expBracket: expAccess | expAccess DOT expBracket;
+expBracket returns [ArrayList<Expression> expRet]:{$expRet = new ArrayList<>();} ex1 = expAccess{$expRet.addAll($ex1.expRet);} | expAccess DOT expBracket;
 
 expAccess: expPar | LPAR expression RPAR;
 
