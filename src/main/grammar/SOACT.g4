@@ -307,7 +307,7 @@ body returns [ArrayList<Statement> bodyRet]:
     w1 = whileLoop {$bodyRet.add($w1.whileRet);} |
     i1 = ifBlock {$bodyRet.add($i1.ifRet);}|
     j1 = joinBlock {$bodyRet.add($j1.joinRet);}|
-    statements
+    s1 = statements{$bodyRet.add($s1.statementRet);}
     )*
     (
     (
@@ -322,7 +322,7 @@ body returns [ArrayList<Statement> bodyRet]:
     w2 = whileLoop {$bodyRet.add($w2.whileRet);}|
     i2 = ifBlock {$bodyRet.add($i2.ifRet);}|
     j2 = joinBlock {$bodyRet.add($j2.joinRet);}|
-    statements
+    s2 = statements{$bodyRet.add($s2.statementRet);}
     )*)?
 ;
 
@@ -419,19 +419,19 @@ observeStatement returns [ObserveStatement observeRet]:
 
 expression returns [ArrayList<Expression> expRet]:
     {$expRet = new ArrayList<>();}
-    expComma |
-    expComma
+    ex1 = expComma{$expRet.addAll($ex1.expRet);} |
+    ex2 = expComma{$expRet.addAll($ex2.expRet);}
     COMMA
-    expression
+    ex3 = expression{$expRet.addAll($ex3.expRet);}
 ;
 
-expComma: expOr | expOr OR expComma {System.out.println("Line " + $OR.getLine() + " : " + "Operator:||");};
+expComma returns [ArrayList<Expression> expRet]: {$expRet = new ArrayList<>();}ex1 = expOr{$expRet.addAll($ex1.expRet);} | ex2 = expOr{$expRet.addAll($ex2.expRet);} OR ex3 = expComma{$expRet.addAll($ex3.expRet);} {System.out.println("Line " + $OR.getLine() + " : " + "Operator:||");};
 
-expOr: expAnd | expAnd AND expOr {System.out.println("Line " + $AND.getLine() + " : " + "Operator:&&");};
+expOr returns [ArrayList<Expression> expRet]: {$expRet = new ArrayList<>();}ex1 = expAnd{$expRet.addAll($ex1.expRet);} | ex2 = expAnd{$expRet.addAll($ex2.expRet);} AND ex3 = expOr{$expRet.addAll($ex3.expRet);} {System.out.println("Line " + $AND.getLine() + " : " + "Operator:&&");};
 
-expAnd: expEquals expAndPrim;
+expAnd returns [ArrayList<Expression> expRet]: {$expRet = new ArrayList<>();}ex1 = expEquals{$expRet.addAll($ex1.expRet);} ex2 = expAndPrim{$expRet.addAll($ex2.expRet);};
 
-expAndPrim: (equals_name = (NOT_EQUAL | EQUAL)  expEquals {System.out.println("Line " + $equals_name.getLine() + " : " + "Operator:" + $equals_name.text);} expAndPrim)?;
+expAndPrim returns [ArrayList<Expression> expRet]: {$expRet = new ArrayList<>();}(equals_name = (NOT_EQUAL | EQUAL)  ex1 = expEquals{} {System.out.println("Line " + $equals_name.getLine() + " : " + "Operator:" + $equals_name.text);} expAndPrim)?;
 
 expEquals: expCompare expEqualsPrim;
 

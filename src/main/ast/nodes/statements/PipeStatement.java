@@ -11,6 +11,18 @@ public class PipeStatement extends Statement{
     private List<Expression> assigned = new ArrayList<>();
     private List<Expression> pipeExpressions = new ArrayList<>();
 
+    public List<Expression> getAssigned() {
+        return assigned;
+    }
+
+    public List<Expression> getAssignee() {
+        return assignee;
+    }
+
+    public List<Expression> getPipeExpressions() {
+        return pipeExpressions;
+    }
+
     public PipeStatement(int _line) {
         line = _line;
     }

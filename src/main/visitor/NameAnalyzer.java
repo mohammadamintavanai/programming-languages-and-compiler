@@ -242,8 +242,15 @@ public class NameAnalyzer extends Visitor<Void> {
 
     @Override
     public Void visit(PipeStatement pipeStatement) {
-        return super.visit(pipeStatement);
+        for(Expression expression:pipeStatement.getAssignee())
+            expression.accept(this);
+        for(Expression expression:pipeStatement.getAssigned())
+            expression.accept(this);
+        for(Expression expression:pipeStatement.getPipeExpressions())
+            expression.accept(this);
+        return null;
     }
+
 
     @Override
 public Void visit(VarDeclaration varDeclaration) {
@@ -261,7 +268,7 @@ public Void visit(VarDeclaration varDeclaration) {
 public Void visit(Identifier identifier) {
 
     try {
-        SymbolTable.top.getItem(Identifier.getName());
+        SymbolTable.top.getItem(identifier.getName());
     }
     catch (ItemNotFound e) {
 //TODO

@@ -23,11 +23,12 @@ public abstract class Visitor<T> implements IVisitor<T> {
     public T visit(ServiceHandler serviceHandler) {return null;}
     public T visit(ObserveHandler observeHandler) {return null;}
     public T visit(IfStatement ifStatement) {return null;}
-    public T visit(IfStatement ifStatement) {return null;}
     public T visit(JoinStatement joinStatement) {return null;}
     public T visit(PipeStatement pipeStatement) {return null;}
     public T visit(InitStatement assignmentStatement) {return null;} //done
     public T visit(ConstructorExpression constructorExpression) {return null;}
     public T visit(ExpressionStatement expressionStatement) {return null;}
     public T visit(ObserveStatement observeStatement) {return null;}
+    public T visit(AssignmentStatement assignmentStatement) {return null;}
+
 }
