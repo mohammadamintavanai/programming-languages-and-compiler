@@ -431,13 +431,13 @@ expOr returns [ArrayList<Expression> expRet]: {$expRet = new ArrayList<>();}ex1 
 
 expAnd returns [ArrayList<Expression> expRet]: {$expRet = new ArrayList<>();}ex1 = expEquals{$expRet.addAll($ex1.expRet);} ex2 = expAndPrim{$expRet.addAll($ex2.expRet);};
 
-expAndPrim returns [ArrayList<Expression> expRet]: {$expRet = new ArrayList<>();}(equals_name = (NOT_EQUAL | EQUAL)  ex1 = expEquals{} {System.out.println("Line " + $equals_name.getLine() + " : " + "Operator:" + $equals_name.text);} expAndPrim)?;
+expAndPrim returns [ArrayList<Expression> expRet]: {$expRet = new ArrayList<>();}(equals_name = (NOT_EQUAL | EQUAL)  ex1 = expEquals{$expRet.addAll($ex1.expRet);} {System.out.println("Line " + $equals_name.getLine() + " : " + "Operator:" + $equals_name.text);} ex2 = expAndPrim{$expRet.addAll($ex2.expRet);})?;
 
-expEquals: expCompare expEqualsPrim;
+expEquals returns [ArrayList<Expression> expRet]:{$expRet = new ArrayList<>();} ex1 = expCompare{$expRet.addAll($ex1.expRet);} ex2 = expEqualsPrim{$expRet.addAll($ex2.expRet);};
 
-expEqualsPrim: (than_name = (LESS_THAN | GREATER_THAN) expCompare {System.out.println("Line " + $than_name.getLine() + " : " + "Operator:" + $than_name.text);} expEqualsPrim)?;
+expEqualsPrim returns [ArrayList<Expression> expRet]:{$expRet = new ArrayList<>();} (than_name = (LESS_THAN | GREATER_THAN) ex1 = expCompare{$expRet.addAll($ex1.expRet);} {System.out.println("Line " + $than_name.getLine() + " : " + "Operator:" + $than_name.text);} ex2 = expEqualsPrim{$expRet.addAll($ex2.expRet);})?;
 
-expCompare: expPlusMinus expComparePrim;
+expCompare returns [ArrayList<Expression> expRet]:{$expRet = new ArrayList<>();} ex1 = expPlusMinus{$expRet.addAll($ex1.expRet);} ex2 = expComparePrim{$expRet.addAll($ex2.expRet);};
 
 expComparePrim: (pm_name = (PLUS | MINUS) expPlusMinus {System.out.println("Line " + $pm_name.getLine() + " : " + "Operator:" + $pm_name.text);} expComparePrim)?;
 
